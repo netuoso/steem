@@ -280,35 +280,17 @@ const account_object& database_fixture::account_create(
 {
    try
    {
-      if( db->has_hardfork( STEEM_HARDFORK_0_17 ) )
-      {
-         account_create_with_delegation_operation op;
-         op.new_account_name = name;
-         op.creator = creator;
-         op.fee = asset( fee, STEEM_SYMBOL );
-         op.delegation = asset( 0, VESTS_SYMBOL );
-         op.owner = authority( 1, key, 1 );
-         op.active = authority( 1, key, 1 );
-         op.posting = authority( 1, post_key, 1 );
-         op.memo_key = key;
-         op.json_metadata = json_metadata;
+      account_create_operation op;
+      op.new_account_name = name;
+      op.creator = creator;
+      op.fee = asset( fee, STEEM_SYMBOL );
+      op.owner = authority( 1, key, 1 );
+      op.active = authority( 1, key, 1 );
+      op.posting = authority( 1, post_key, 1 );
+      op.memo_key = key;
+      op.json_metadata = json_metadata;
 
-         trx.operations.push_back( op );
-      }
-      else
-      {
-         account_create_operation op;
-         op.new_account_name = name;
-         op.creator = creator;
-         op.fee = asset( fee, STEEM_SYMBOL );
-         op.owner = authority( 1, key, 1 );
-         op.active = authority( 1, key, 1 );
-         op.posting = authority( 1, post_key, 1 );
-         op.memo_key = key;
-         op.json_metadata = json_metadata;
-
-         trx.operations.push_back( op );
-      }
+      trx.operations.push_back( op );
 
       trx.set_expiration( db->head_block_time() + STEEM_MAX_TIME_UNTIL_EXPIRATION );
       trx.sign( creator_key, db->get_chain_id() );
@@ -613,7 +595,7 @@ asset_symbol_type smt_database_fixture::create_smt( signed_transaction& tx, cons
 
       set_price_feed( price( ASSET( "1.000 TBD" ), ASSET( "1.000 TESTS" ) ) );
       convert( account_name, ASSET( "5000.000 TESTS" ) );
-      
+
       // The list of available nais is not dependent on SMT desired precision (token_decimal_places).
       auto available_nais =  db->get_smt_next_identifier();
       FC_ASSERT( available_nais.size() > 0, "No available nai returned by get_smt_next_identifier." );
@@ -630,7 +612,7 @@ asset_symbol_type smt_database_fixture::create_smt( signed_transaction& tx, cons
 
       db->push_transaction( tx, 0 );
 
-      generate_block();      
+      generate_block();
    }
    FC_LOG_AND_RETHROW();
 
