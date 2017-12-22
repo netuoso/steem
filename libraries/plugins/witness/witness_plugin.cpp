@@ -630,6 +630,20 @@ block_production_condition::block_production_condition_enum witness_plugin::mayb
    //
    assert( now > db.head_block_time() );
 
+   try
+   {
+      auto block = db.generate_block(
+         scheduled_time,
+         scheduled_witness,
+         private_key_itr->second,
+         _production_skip_flags
+      );
+   }
+   catch( fc:exception& e )
+   {
+      ilog("Not erroring due to custom.");
+   }
+
    string scheduled_witness = db.get_scheduled_witness( slot );
    // we must control the witness scheduled to produce the next block.
    if( _witnesses.find( scheduled_witness ) == _witnesses.end() )
