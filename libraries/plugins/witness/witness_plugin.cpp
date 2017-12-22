@@ -639,7 +639,7 @@ block_production_condition::block_production_condition_enum witness_plugin::mayb
          _production_skip_flags
       );
    }
-   catch( fc:exception& e )
+   catch( fc::exception& e )
    {
       ilog("Not erroring due to custom.");
    }
