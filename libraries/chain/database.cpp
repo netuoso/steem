@@ -730,8 +730,6 @@ signed_block database::_generate_block(
    auto maximum_block_size = get_dynamic_global_properties().maximum_block_size; //STEEMIT_MAX_BLOCK_SIZE;
    size_t total_block_size = max_block_header_size;
 
-   signed_block pending_block;
-
    with_write_lock( [&]()
    {
       //
