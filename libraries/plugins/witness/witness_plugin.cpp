@@ -636,9 +636,7 @@ block_production_condition::block_production_condition_enum witness_plugin::mayb
    {
       auto block = db.generate_block(
          db.get_slot_time( slot ),
-         scheduled_witness,
-         "private_key_itr->second",
-         false
+         scheduled_witness
       );
    }
    catch( fc::exception& e )

@@ -703,6 +703,24 @@ signed_block database::generate_block(
    return result;
 }
 
+signed_block database::generate_block(
+   fc::time_point_sec when,
+   const account_name_type& witness_owner
+   )
+{
+   // CUSTOM ***
+   signed_block pending_block;
+   ilog("${t}", ("t", pending_block.transactions));
+   detail::with_skip_flags( *this, skip, [&]()
+   {
+      try
+      {
+         result = _generate_block( when, witness_owner, block_signing_private_key );
+      }
+      FC_CAPTURE_AND_RETHROW( (witness_owner) )
+   });
+   return result;
+}
 
 signed_block database::_generate_block(
    fc::time_point_sec when,
@@ -714,10 +732,6 @@ signed_block database::_generate_block(
    uint32_t slot_num = get_slot_at_time( when );
    FC_ASSERT( slot_num > 0 );
    string scheduled_witness = get_scheduled_witness( slot_num );
-
-   // CUSTOM ***
-   signed_block pending_block;
-   ilog("${t}", ("t", pending_block.transactions));
 
    FC_ASSERT( scheduled_witness == witness_owner );
 
