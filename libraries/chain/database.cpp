@@ -662,7 +662,7 @@ void database::push_transaction( const signed_transaction& trx, uint32_t skip )
 
 void database::_push_transaction( const signed_transaction& trx )
 {
-   ilog(trx);
+   ilog("${z}", ("z", trx));
    // If this is the first transaction pushed after applying a block, start a new undo session.
    // This allows us to quickly rewind to the clean state of the head block, in case a new block arrives.
    if( !_pending_tx_session.valid() )
