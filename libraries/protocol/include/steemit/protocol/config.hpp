@@ -208,6 +208,9 @@
 #define STEEMIT_SBD_STOP_PERCENT                (5*STEEMIT_1_PERCENT ) // Stop printing SBD at 5% Market Cap
 #define STEEMIT_SBD_START_PERCENT               (2*STEEMIT_1_PERCENT) // Start reducing printing of SBD at 2% Market Cap
 
+#define STEEMIT_SBD_STOP_PERCENT_POST_HF19      (10*STEEMIT_1_PERCENT ) // Stop printing SBD at 10% Market Cap
+#define STEEMIT_SBD_START_PERCENT_POST_HF19     (9.9*STEEMIT_1_PERCENT) // Start reducing printing of SBD at 9.9% Market Cap
+
 #define STEEMIT_MIN_ACCOUNT_NAME_LENGTH          3
 #define STEEMIT_MAX_ACCOUNT_NAME_LENGTH         16
 
