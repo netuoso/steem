@@ -552,8 +552,8 @@ namespace steem { namespace protocol {
       account_name_type challenger;
       account_name_type challenged;
 
-      void get_required_active_authorities( flat_set< account_name_type >& a )const{ a.insert( challenger ); }
       void validate() const;
+      void get_required_active_authorities( flat_set< account_name_type >& a )const{ a.insert(account); }
    };
 
    /**

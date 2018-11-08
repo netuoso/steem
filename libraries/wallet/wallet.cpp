@@ -545,6 +545,8 @@ public:
       tx.operations.push_back( op );
       tx.validate();
 
+      idump( (tx) );
+
       return sign_transaction( tx, broadcast );
    } FC_CAPTURE_AND_RETHROW( (challenger)(challenged)(broadcast) ) }
 
