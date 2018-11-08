@@ -535,7 +535,7 @@ public:
       return sign_transaction( tx, broadcast );
    } FC_CAPTURE_AND_RETHROW( (account_to_modify)(proxy)(broadcast) ) }
 
-   signed_transaction challenge_witness_votes(string challenger, string challenged, bool broadcast /* = false */)
+   signed_transaction challenge_witness(string challenger, string challenged, bool broadcast /* = false */)
    { try {
       account_witness_challenge_operation op;
       op.challenger = challenger;
@@ -1102,6 +1102,9 @@ optional< condenser_api::api_witness_object > wallet_api::get_witness(string own
 
 condenser_api::legacy_signed_transaction wallet_api::set_voting_proxy(string account_to_modify, string voting_account, bool broadcast /* = false */)
 { return my->set_voting_proxy(account_to_modify, voting_account, broadcast); }
+
+condenser_api::legacy_signed_transaction wallet_api::challenge_witness(string challenger, string challenged, bool broadcast /* = false */)
+{ return my->challenge_witness(challenger, challenged, broadcast); }
 
 void wallet_api::set_wallet_filename(string wallet_filename) { my->_wallet_filename = wallet_filename; }
 

@@ -1347,6 +1347,13 @@ void account_witness_vote_evaluator::do_apply( const account_witness_vote_operat
 
 void account_witness_challenge_evaluator::do_apply( const account_witness_challenge_operation& op )
 {
+   // TODO:
+   // cycle through challenged history in reverse
+   // if match for active/owner found within 365 days; exit
+   // else query rc_api for last_update
+   //   if last update within 365*5 days; exit
+   //   else witness challenge successful
+
    // const auto& challenger = _db.get_account( op.challenger );
    const auto& challenged = _db.get_account( op.challenged );
 
