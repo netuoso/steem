@@ -1147,6 +1147,7 @@ FC_API( steem::wallet::wallet_api,
         (delegate_vesting_shares)
         (update_witness)
         (set_voting_proxy)
+        (challenge_witness)
         (vote_for_witness)
         (follow)
         (transfer)
