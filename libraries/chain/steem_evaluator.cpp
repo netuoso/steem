@@ -1359,6 +1359,10 @@ void account_witness_challenge_evaluator::do_apply( const account_witness_challe
 
    FC_ASSERT( (_db.head_block_time() - challenged.last_account_update)  > fc::days(365), "Account must be inactive for 365 days to be eligible for witness vote challenge." );
 
+   const auto& last_activity = _db.head_block_time() - max(challenged.created, challenged.last_vote_time, challenged.last_post);
+
+   idump( (last_activity) );
+
    if (true)
    {
       /// clear all individual vote records
