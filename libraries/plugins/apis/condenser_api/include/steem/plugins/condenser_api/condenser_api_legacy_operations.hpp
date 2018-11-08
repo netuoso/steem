@@ -1071,7 +1071,7 @@ namespace steem { namespace plugins { namespace condenser_api {
       bool operator()( const witness_set_properties_operation& op )const         { l_op = op; return true; }
       bool operator()( const account_witness_vote_operation& op )const           { l_op = op; return true; }
       bool operator()( const account_witness_proxy_operation& op )const          { l_op = op; return true; }
-      bool operator()( const account_witness_challenged_operation& op )const     { l_op = op; return true; }
+      bool operator()( const account_witness_challenge_operation& op )const      { l_op = op; return true; }
       bool operator()( const custom_operation& op )const                         { l_op = op; return true; }
       bool operator()( const custom_json_operation& op )const                    { l_op = op; return true; }
       bool operator()( const custom_binary_operation& op )const                  { l_op = op; return true; }
