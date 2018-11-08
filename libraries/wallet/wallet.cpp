@@ -535,22 +535,18 @@ public:
       return sign_transaction( tx, broadcast );
    } FC_CAPTURE_AND_RETHROW( (account_to_modify)(proxy)(broadcast) ) }
 
-   signed_transaction challenge_witness_votes( string challenger, string challenged, bool broadcast )
-   {
-      try {
-         account_witness_challenge_operation op;
-         account_name_type challenger;
-         account_name_type challenged;
-         op.challenged = challenger;
-         op.challenger = challenged;
+   signed_transaction challenge_witness_votes(string challenger, string challenged, bool broadcast /* = false */)
+   { try {
+      account_witness_challenge_operation op;
+      op.challenger = challenger;
+      op.challenged = challenged;
 
-         signed_transaction tx;
-         tx.operations.push_back( op );
-         tx.validate();
+      signed_transaction tx;
+      tx.operations.push_back( op );
+      tx.validate();
 
-         return sign_transaction( tx, broadcast );
-      FC_CAPTURE_AND_RETHROW( (account_to_modify)(proxy)(broadcast) ) }
-   }
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (challenger)(challenged)(broadcast) ) }
 
    optional< condenser_api::api_witness_object > get_witness( string owner_account )
    {
