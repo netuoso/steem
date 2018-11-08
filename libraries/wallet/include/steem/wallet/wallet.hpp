@@ -210,12 +210,6 @@ class wallet_api
        */
       condenser_api::legacy_signed_transaction get_transaction( transaction_id_type trx_id )const;
 
-      /**
-       *  @param challenger  - the name of the account to retrieve key for
-       *  @param challenged  - the name of the account to retrieve key for
-       */
-      signed_transaction                challenge_witness( string challenger, string challenged, bool broadcast )const;
-
       /** Checks whether the wallet has just been created and has not yet had a password set.
        *
        * Calling \c set_password will transition the wallet to the locked state.
@@ -619,6 +613,22 @@ class wallet_api
       condenser_api::legacy_signed_transaction set_voting_proxy(
          string account_to_modify,
          string proxy,
+         bool broadcast = false);
+
+      /** Challenge the ownership of account to determine if witness votes valid
+       *
+       * Challenging a user will check the last time the challenged user was active
+       * and remove their active witness votes or witness proxy if inactive for longer
+       * than 365 days from last use of active/owner key or 365*5 days from last use of
+       * posting key.
+       *
+       * @param challenger the name of the challenging account
+       * @param challenged the name of account that should be challenged (checked for activity) 
+       * @param broadcast true if you wish to broadcast the transaction
+       */
+      condenser_api::legacy_signed_transaction challenge_witness(
+         string challenger,
+         string challenged,
          bool broadcast = false);
 
       /**
