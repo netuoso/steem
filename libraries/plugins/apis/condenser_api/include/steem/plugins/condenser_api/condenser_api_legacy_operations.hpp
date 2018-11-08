@@ -50,6 +50,7 @@ namespace steem { namespace plugins { namespace condenser_api {
    typedef witness_set_properties_operation       legacy_witness_set_properties_operation;
    typedef account_witness_vote_operation         legacy_account_witness_vote_operation;
    typedef account_witness_proxy_operation        legacy_account_witness_proxy_operation;
+   typedef account_witness_challenge_operation    legacy_account_witness_challenge_operation;
    typedef custom_operation                       legacy_custom_operation;
    typedef custom_json_operation                  legacy_custom_json_operation;
    typedef custom_binary_operation                legacy_custom_binary_operation;
@@ -1004,6 +1005,7 @@ namespace steem { namespace plugins { namespace condenser_api {
             legacy_witness_update_operation,
             legacy_account_witness_vote_operation,
             legacy_account_witness_proxy_operation,
+            legacy_account_witness_challenge_operation,
             legacy_pow_operation,
             legacy_custom_operation,
             legacy_report_over_production_operation,
@@ -1069,6 +1071,7 @@ namespace steem { namespace plugins { namespace condenser_api {
       bool operator()( const witness_set_properties_operation& op )const         { l_op = op; return true; }
       bool operator()( const account_witness_vote_operation& op )const           { l_op = op; return true; }
       bool operator()( const account_witness_proxy_operation& op )const          { l_op = op; return true; }
+      bool operator()( const account_witness_challenged_operation& op )const     { l_op = op; return true; }
       bool operator()( const custom_operation& op )const                         { l_op = op; return true; }
       bool operator()( const custom_json_operation& op )const                    { l_op = op; return true; }
       bool operator()( const custom_binary_operation& op )const                  { l_op = op; return true; }
