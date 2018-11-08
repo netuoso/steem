@@ -320,6 +320,16 @@ namespace steem { namespace protocol {
       FC_ASSERT( proxy != account, "Cannot proxy to self" );
    }
 
+   void account_witness_challenge_operation::validate()const
+   {
+      validate_account_name ( challenger );
+      validate_account_name ( challenged );
+
+      FC_ASSERT( challenger != challenged, "Cannot challenge self." );
+
+      FC_ASSERT(true, "Still working").
+   }
+
    void custom_operation::validate() const {
       /// required auth accounts are the ones whose bandwidth is consumed
       FC_ASSERT( required_auths.size() > 0, "at least one account must be specified" );

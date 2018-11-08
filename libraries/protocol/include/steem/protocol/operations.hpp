@@ -32,6 +32,7 @@ namespace steem { namespace protocol {
             witness_update_operation,
             account_witness_vote_operation,
             account_witness_proxy_operation,
+            account_witness_challenge_operation,
 
             pow_operation,
 

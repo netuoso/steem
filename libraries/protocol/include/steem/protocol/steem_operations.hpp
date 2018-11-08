@@ -547,6 +547,14 @@ namespace steem { namespace protocol {
       void get_required_active_authorities( flat_set<account_name_type>& a )const{ a.insert(account); }
    };
 
+   struct account_witness_challenge_operation : public base_operation
+   {
+      account_name_type challenger;
+      account_name_type challenged;
+
+      void get_required_active_authorities( flat_set< account_name_type >& a )const{ a.insert( challenger ); }
+      void validate() const;
+   };
 
    /**
     * @brief provides a generic way to add higher level protocols on top of witness consensus
@@ -1118,6 +1126,7 @@ FC_REFLECT( steem::protocol::witness_update_operation, (owner)(url)(block_signin
 FC_REFLECT( steem::protocol::witness_set_properties_operation, (owner)(props)(extensions) )
 FC_REFLECT( steem::protocol::account_witness_vote_operation, (account)(witness)(approve) )
 FC_REFLECT( steem::protocol::account_witness_proxy_operation, (account)(proxy) )
+FC_REFLECT( steem::protocol::account_witness_challenge_operation, (challenger)(challenged) )
 FC_REFLECT( steem::protocol::comment_operation, (parent_author)(parent_permlink)(author)(permlink)(title)(body)(json_metadata) )
 FC_REFLECT( steem::protocol::vote_operation, (voter)(author)(permlink)(weight) )
 FC_REFLECT( steem::protocol::custom_operation, (required_auths)(id)(data) )

@@ -1345,6 +1345,16 @@ void account_witness_vote_evaluator::do_apply( const account_witness_vote_operat
    }
 }
 
+void account_witness_challenge_evaluator::do_apply( const account_witness_challenge_operation& op )
+{
+   const auto& challenger = _db.get_account( op.challenger );
+   const auto& challenged = _db.get_account( op.challenged );
+
+   FC_ASSERT( (_db.head_block_time() - challenged.last_bandwidth_update)  > fc::days(365), "Account must be inactive for 365 days to be eligible for witness vote challenge." );
+
+   FC_ASSERT(true, "This operation is a WIP.");
+}
+
 void pre_hf20_vote_evaluator( const vote_operation& o, database& _db )
 {
    const auto& comment = _db.get_comment( o.author, o.permlink );

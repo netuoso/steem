@@ -210,6 +210,12 @@ class wallet_api
        */
       condenser_api::legacy_signed_transaction get_transaction( transaction_id_type trx_id )const;
 
+      /**
+       *  @param challenger  - the name of the account to retrieve key for
+       *  @param challenged  - the name of the account to retrieve key for
+       */
+      signed_transaction                challenge_witness_votes( string challenger, string challenged, bool broadcast )const;
+
       /** Checks whether the wallet has just been created and has not yet had a password set.
        *
        * Calling \c set_password will transition the wallet to the locked state.

@@ -96,6 +96,7 @@ struct operation_exec_info
    int64_t account_update_operation_exec_time                  =  14000;
    int64_t account_witness_proxy_operation_exec_time           = 117000;
    int64_t account_witness_vote_operation_exec_time            =  23000;
+   int64_t account_witness_challenge_operation_exec_time       =   5300;
    int64_t cancel_transfer_from_savings_operation_exec_time    =  11500;
    int64_t change_recovery_account_operation_exec_time         =  12000;
    int64_t claim_account_operation_exec_time                   =  10000;
@@ -176,6 +177,7 @@ FC_REFLECT( steem::plugins::rc::operation_exec_info,
    ( account_update_operation_exec_time )
    ( account_witness_proxy_operation_exec_time )
    ( account_witness_vote_operation_exec_time )
+   ( account_witness_challenge_operation_exec_time )
    ( cancel_transfer_from_savings_operation_exec_time )
    ( change_recovery_account_operation_exec_time )
    ( claim_account_operation_exec_time )

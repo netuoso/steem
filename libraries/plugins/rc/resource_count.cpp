@@ -211,6 +211,11 @@ struct count_operation_visitor
       execution_time_count += _e.account_witness_proxy_operation_exec_time;
    }
 
+   void operator()( const account_witness_challenge_operation& )const
+   {
+      execution_time_count += _e.account_witness_challenge_operation_exec_time;
+   }
+
    void operator()( const cancel_transfer_from_savings_operation& )const
    {
       execution_time_count += _e.cancel_transfer_from_savings_operation_exec_time;

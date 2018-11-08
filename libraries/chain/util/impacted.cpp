@@ -112,6 +112,12 @@ struct get_impacted_account_visitor
       _impacted.insert( op.proxy );
    }
 
+   void operator()( const account_witness_challenge_operation& op )
+   {
+      _impacted.insert( op.challenger );
+      _impacted.insert( op.challenged );
+   }
+
    void operator()( const feed_publish_operation& op )
    {
       _impacted.insert( op.publisher );
