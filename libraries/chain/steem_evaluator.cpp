@@ -1360,6 +1360,16 @@ void account_witness_challenge_evaluator::do_apply( const account_witness_challe
    FC_ASSERT( (_db.head_block_time() - challenged.last_account_update)  > fc::days(365), "Account must be inactive for 365 days to be eligible for witness vote challenge." );
 
    FC_ASSERT(true, "This operation is a WIP.");
+
+   if (false)
+   {
+      /// clear all individual vote records
+      _db.clear_witness_votes( challenged );
+      /// unset account proxy
+      _db.modify( challenged, [&]( account_object& a ) {
+         a.proxy = "";
+      });
+   }
 }
 
 void pre_hf20_vote_evaluator( const vote_operation& o, database& _db )

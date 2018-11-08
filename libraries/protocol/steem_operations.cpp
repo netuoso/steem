@@ -324,10 +324,7 @@ namespace steem { namespace protocol {
    {
       validate_account_name ( challenger );
       validate_account_name ( challenged );
-
       FC_ASSERT( challenger != challenged, "Cannot challenge self." );
-
-      FC_ASSERT(true, "Still working");
    }
 
    void custom_operation::validate() const {
