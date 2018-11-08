@@ -535,7 +535,7 @@ public:
       return sign_transaction( tx, broadcast );
    } FC_CAPTURE_AND_RETHROW( (account_to_modify)(proxy)(broadcast) ) }
 
-   signed_transaction challenge_witness_votes( string challenger, string challenged, bool broadcast )const;
+   signed_transaction challenge_witness_votes( string challenger, string challenged, bool broadcast )
    {
       try {
          account_witness_challenge_operation op;
