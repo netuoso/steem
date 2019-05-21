@@ -518,6 +518,7 @@ namespace steem { namespace chain {
          void create_block_summary(const signed_block& next_block);
 
          void clear_null_account_balance();
+         void convert_treasury_account_funds();
 
          void process_proposals( const block_notification& note );
 

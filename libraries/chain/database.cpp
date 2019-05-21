@@ -2507,6 +2507,143 @@ share_type database::pay_treasury_funds( share_type funds )
    FC_CAPTURE_LOG_AND_RETHROW( (treasury_account.name)(funds) )
 }
 
+void database::convert_treasury_account_funds()
+{
+   if( has_hardfork( STEEM_PROPOSALS_HARDFORK ) )
+   {
+      const auto& treasury_account = get_account( STEEM_TREASURY_ACCOUNT );
+
+      asset total_steem( 0, STEEM_SYMBOL );
+      asset total_sbd( 0, SBD_SYMBOL );
+
+      asset vesting_shares_steem_value = asset( 0, STEEM_SYMBOL );
+
+      if( treasury_account.balance.amount > 0 )
+      {
+         total_steem += treasury_account.balance;
+      }
+
+      if( treasury_account.savings_balance.amount > 0 )
+      {
+         total_steem += treasury_account.savings_balance;
+      }
+
+      if( treasury_account.savings_sbd_balance.amount > 0 )
+      {
+         total_sbd += treasury_account.savings_sbd_balance;
+      }
+
+      if( treasury_account.vesting_shares.amount > 0 )
+      {
+         const auto& gpo = get_dynamic_global_properties();
+         vesting_shares_steem_value = treasury_account.vesting_shares * gpo.get_vesting_share_price();
+         total_steem += vesting_shares_steem_value;
+      }
+
+      if( treasury_account.reward_steem_balance.amount > 0 )
+      {
+         total_steem += treasury_account.reward_steem_balance;
+      }
+
+      if( treasury_account.reward_sbd_balance.amount > 0 )
+      {
+         total_sbd += treasury_account.reward_sbd_balance;
+      }
+
+      if( treasury_account.reward_vesting_balance.amount > 0 )
+      {
+         total_steem += treasury_account.reward_vesting_steem;
+      }
+
+      if( (total_steem.amount.value == 0) && (total_sbd.amount.value == 0) )
+         return;
+
+      const auto& median_price = get_feed_history().current_median_history;
+
+      if( total_steem.amount.value > 0 && !median_price.is_null() )
+      {
+         auto sbd = asset( total_steem, STEEM_SYMBOL ) * median_price;
+         total_sbd += sbd;
+      }
+
+      operation vop_op = treasury_reward_operation( treasury_account.name, asset(0, SBD_SYMBOL) );
+      treasury_reward_operation& vop = vop_op.get< treasury_reward_operation >();
+      if( total_sbd.amount.value > 0 )
+         vop.sbd_payout = total_sbd;
+
+      pre_push_virtual_operation( vop_op );
+
+      if( treasury_account.balance.amount > 0 )
+      {
+         adjust_balance( treasury_account, -treasury_account.balance );
+      }
+
+      if( treasury_account.savings_balance.amount > 0 )
+      {
+         adjust_savings_balance( treasury_account, -treasury_account.savings_balance );
+      }
+
+      if( treasury_account.savings_sbd_balance.amount > 0 )
+      {
+         adjust_savings_balance( treasury_account, -treasury_account.savings_sbd_balance );
+      }
+
+      if( treasury_account.vesting_shares.amount > 0 )
+      {
+         const auto& gpo = get_dynamic_global_properties();
+
+         modify( gpo, [&]( dynamic_global_property_object& g )
+         {
+            g.total_vesting_shares -= treasury_account.vesting_shares;
+            g.total_vesting_fund_steem -= vesting_shares_steem_value;
+         });
+
+         modify( treasury_account, [&]( account_object& a )
+         {
+            a.vesting_shares.amount = 0;
+         });
+      }
+
+      if( treasury_account.reward_steem_balance.amount > 0 )
+      {
+         adjust_reward_balance( treasury_account, -treasury_account.reward_steem_balance );
+      }
+
+      if( treasury_account.reward_sbd_balance.amount > 0 )
+      {
+         adjust_reward_balance( treasury_account, -treasury_account.reward_sbd_balance );
+      }
+
+      if( treasury_account.reward_vesting_balance.amount > 0 )
+      {
+         const auto& gpo = get_dynamic_global_properties();
+
+         modify( gpo, [&]( dynamic_global_property_object& g )
+         {
+            g.pending_rewarded_vesting_shares -= treasury_account.reward_vesting_balance;
+            g.pending_rewarded_vesting_steem -= treasury_account.reward_vesting_steem;
+         });
+
+         modify( treasury_account, [&]( account_object& a )
+         {
+            a.reward_vesting_steem.amount = 0;
+            a.reward_vesting_balance.amount = 0;
+         });
+      }
+
+      if( total_steem.amount > 0 )
+         adjust_supply( -total_steem );
+
+      if( total_sbd.amount > 0 )
+      {
+         adjust_balance( treasury_account, total_sbd);
+         adjust_supply( total_sbd );
+      }
+
+      post_push_virtual_operation( vop_op );
+   }
+}
+
 /**
  *  Iterates over all conversion requests with a conversion date before
  *  the head block time and then converts them to/from steem/sbd at the
@@ -3275,6 +3412,7 @@ void database::_apply_block( const signed_block& next_block )
    update_virtual_supply();
 
    clear_null_account_balance();
+   convert_treasury_account_funds();
    process_funds();
    process_conversions();
    process_comment_cashout();
