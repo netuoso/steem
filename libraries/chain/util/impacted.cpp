@@ -252,6 +252,11 @@ struct get_impacted_account_visitor
       _impacted.insert( op.producer );
    }
 
+   void operator()( const treasury_reward_operation& op )
+   {
+      _impacted.insert( op.account );
+   }
+
    void operator()(const proposal_pay_operation& op)
    {
       _impacted.insert(op.receiver);

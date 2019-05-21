@@ -100,6 +100,7 @@ namespace steem { namespace protocol {
             return_vesting_delegation_operation,
             comment_benefactor_reward_operation,
             producer_reward_operation,
+            treasury_reward_operation,
             clear_null_account_balance_operation,
             proposal_pay_operation
          > operation;

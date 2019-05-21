@@ -298,6 +298,7 @@ namespace detail
                         case operation::tag<pow_operation>::value:
                         case operation::tag<custom_operation>::value:
                         case operation::tag<producer_reward_operation>::value:
+                        case operation::tag<treasury_reward_operation>::value:
                         default:
                            if( item.second.op.visit( visitor ) )
                            {

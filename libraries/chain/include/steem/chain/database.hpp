@@ -405,6 +405,7 @@ namespace steem { namespace chain {
          uint16_t get_curation_rewards_percent( const comment_object& c ) const;
 
          share_type pay_reward_funds( share_type reward );
+         share_type pay_treasury_funds( share_type reward );
 
          void  pay_liquidity_reward();
 

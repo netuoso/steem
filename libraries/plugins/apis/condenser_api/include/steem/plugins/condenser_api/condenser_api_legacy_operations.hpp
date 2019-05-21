@@ -1006,6 +1006,26 @@ namespace steem { namespace plugins { namespace condenser_api {
       legacy_asset      vesting_shares;
    };
 
+   struct legacy_treasury_reward_operation
+   {
+      legacy_treasury_reward_operation() {}
+      legacy_treasury_reward_operation( const treasury_reward_operation& op ) :
+         account( op.account ),
+         sbd_payout( legacy_asset::from_asset( op.sbd_payout ) )
+      {}
+
+      operator treasury_reward_operation()const
+      {
+         treasury_reward_operation op;
+         op.account = account;
+         op.sbd_payout = sbd_payout;
+         return op;
+      }
+
+      account_name_type account;
+      legacy_asset      sbd_payout;
+   };
+
    struct legacy_claim_account_operation
    {
       legacy_claim_account_operation() {}
@@ -1089,6 +1109,7 @@ namespace steem { namespace plugins { namespace condenser_api {
             legacy_return_vesting_delegation_operation,
             legacy_comment_benefactor_reward_operation,
             legacy_producer_reward_operation,
+            legacy_treasury_reward_operation,
             legacy_create_proposal_operation,
             legacy_update_proposal_votes_operation,
             legacy_remove_proposal_operation
@@ -1312,6 +1333,12 @@ namespace steem { namespace plugins { namespace condenser_api {
          return true;
       }
 
+      bool operator()( const treasury_reward_operation& op )const
+      {
+         l_op = legacy_treasury_reward_operation( op );
+         return true;
+      }
+
       bool operator()( const claim_account_operation& op )const
       {
          l_op = legacy_claim_account_operation( op );
@@ -1485,6 +1512,11 @@ struct convert_from_legacy_operation_visitor
       return operation( producer_reward_operation( op ) );
    }
 
+   operation operator()( const legacy_treasury_reward_operation& op )const
+   {
+      return operation( treasury_reward_operation( op ) );
+   }
+
    operation operator()( const legacy_claim_account_operation& op )const
    {
       return operation( claim_account_operation( op ) );
@@ -1616,6 +1648,7 @@ FC_REFLECT( steem::plugins::condenser_api::legacy_fill_transfer_from_savings_ope
 FC_REFLECT( steem::plugins::condenser_api::legacy_return_vesting_delegation_operation, (account)(vesting_shares) )
 FC_REFLECT( steem::plugins::condenser_api::legacy_comment_benefactor_reward_operation, (benefactor)(author)(permlink)(sbd_payout)(steem_payout)(vesting_payout) )
 FC_REFLECT( steem::plugins::condenser_api::legacy_producer_reward_operation, (producer)(vesting_shares) )
+FC_REFLECT( steem::plugins::condenser_api::legacy_treasury_reward_operation, (account)(sbd_payout) )
 FC_REFLECT( steem::plugins::condenser_api::legacy_claim_account_operation, (creator)(fee)(extensions) )
 FC_REFLECT( steem::plugins::condenser_api::legacy_create_proposal_operation, (creator)(receiver)(start_date)(end_date)(daily_pay)(subject)(permlink) )
 

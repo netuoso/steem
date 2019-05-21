@@ -178,6 +178,16 @@ namespace steem { namespace protocol {
 
    };
 
+   struct treasury_reward_operation : public virtual_operation
+   {
+      treasury_reward_operation(){}
+      treasury_reward_operation( const string& a, const asset& p ) : account( a ), sbd_payout( p ) {}
+
+      account_name_type account;
+      asset             sbd_payout;
+
+   };
+
    struct clear_null_account_balance_operation : public virtual_operation
    {
       vector< asset >   total_cleared;
@@ -200,4 +210,5 @@ FC_REFLECT( steem::protocol::comment_payout_update_operation, (author)(permlink)
 FC_REFLECT( steem::protocol::return_vesting_delegation_operation, (account)(vesting_shares) )
 FC_REFLECT( steem::protocol::comment_benefactor_reward_operation, (benefactor)(author)(permlink)(sbd_payout)(steem_payout)(vesting_payout) )
 FC_REFLECT( steem::protocol::producer_reward_operation, (producer)(vesting_shares) )
+FC_REFLECT( steem::protocol::treasury_reward_operation, (account)(sbd_payout) )
 FC_REFLECT( steem::protocol::clear_null_account_balance_operation, (total_cleared) )

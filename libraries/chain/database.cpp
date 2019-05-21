@@ -2178,11 +2178,25 @@ void database::process_funds()
       int64_t current_inflation_rate = std::max( start_inflation_rate - inflation_rate_adjustment, inflation_rate_floor );
 
       auto new_steem = ( props.virtual_supply.amount * current_inflation_rate ) / ( int64_t( STEEM_100_PERCENT ) * int64_t( STEEM_BLOCKS_PER_YEAR ) );
-      auto content_reward = ( new_steem * STEEM_CONTENT_REWARD_PERCENT ) / STEEM_100_PERCENT;
-      if( has_hardfork( STEEM_HARDFORK_0_17__774 ) )
-         content_reward = pay_reward_funds( content_reward ); /// 75% to content creator
+
+      share_type content_reward, witness_reward;
       auto vesting_reward = ( new_steem * STEEM_VESTING_FUND_PERCENT ) / STEEM_100_PERCENT; /// 15% to vesting fund
-      auto witness_reward = new_steem - content_reward - vesting_reward; /// Remaining 10% to witness pay
+
+      if( has_hardfork( STEEM_PROPOSALS_HARDFORK ) )
+      {
+         content_reward = ( new_steem * STEEM_CONTENT_REWARD_PERCENT_SPS ) / STEEM_100_PERCENT;
+         content_reward = pay_reward_funds( content_reward ); /// 65% to content creator
+         auto treasury_reward = ( new_steem * STEEM_TREASURY_FUND_PERCENT ) / STEEM_100_PERCENT;
+         pay_treasury_funds( treasury_reward ); /// 10% to STEEM_TREASURY_ACCOUNT // converted to SBD first
+         witness_reward = new_steem - content_reward - treasury_reward - vesting_reward; /// Remaining 10% to witness pay
+      }
+      else
+      {
+         content_reward = ( new_steem * STEEM_CONTENT_REWARD_PERCENT ) / STEEM_100_PERCENT;
+         if( has_hardfork( STEEM_HARDFORK_0_17__774 ) )
+            content_reward = pay_reward_funds( content_reward ); /// 75% to content creator
+         witness_reward = new_steem - content_reward - vesting_reward; /// Remaining 10% to witness pay
+      }
 
       const auto& cwit = get_witness( props.current_witness );
       witness_reward *= STEEM_MAX_WITNESSES;
@@ -2460,6 +2474,37 @@ share_type database::pay_reward_funds( share_type reward )
    }
 
    return used_rewards;
+}
+
+share_type database::pay_treasury_funds( share_type funds )
+{
+   const auto& treasury_account = get_account( STEEM_TREASURY_ACCOUNT );
+   share_type funds_paid = 0;
+
+   try
+   {
+      if( funds == 0 )
+         return funds_paid;
+
+      const auto& median_price = get_feed_history().current_median_history;
+
+      if( !median_price.is_null() )
+      {
+         auto sbd = asset( funds, STEEM_SYMBOL ) * median_price;
+
+         push_virtual_operation( treasury_reward_operation( treasury_account.name, sbd ) );
+
+         adjust_balance( treasury_account, sbd );
+
+         adjust_supply( asset( -sbd.amount, STEEM_SYMBOL ) );
+         adjust_supply( sbd );
+
+         funds_paid = sbd.amount;
+      }
+
+      return funds_paid;
+   }
+   FC_CAPTURE_LOG_AND_RETHROW( (treasury_account.name)(funds) )
 }
 
 /**

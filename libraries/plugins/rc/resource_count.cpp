@@ -397,6 +397,7 @@ struct count_operation_visitor
    void operator()( const return_vesting_delegation_operation& ) const {}
    void operator()( const comment_benefactor_reward_operation& ) const {}
    void operator()( const producer_reward_operation& ) const {}
+   void operator()( const treasury_reward_operation& ) const {}
    void operator()( const clear_null_account_balance_operation& ) const {}
    void operator()(const proposal_pay_operation&) const {}
 
